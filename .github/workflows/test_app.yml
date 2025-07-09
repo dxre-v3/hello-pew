@@ -1,0 +1,21 @@
+name: Test_App
+on: push
+  # pull_request:
+  #   branches:
+  #     - main
+jobs: 
+  Test-App: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v4
+      - name: install-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: install-dependencies
+        run: npm install
+      - name: install-browsers
+        run: npx playwright install --with-deps chromium
+      - name: playwright-tests
+        run: npm run test:e2e

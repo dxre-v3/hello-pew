@@ -1,0 +1,61 @@
+name: hello
+on:
+  workflow_run: 
+    workflows: [Test_App]
+    types: 
+      - completed
+jobs: 
+  Build-App: 
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v4
+      - name: install-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: install-dependencies
+        run: npm install
+      - name: build-app
+        run: npm run build
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-files
+          path: ./dist
+  Deploy-App: 
+    needs: Build-App
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: acquire-artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: prod-files
+          path: ./dist
+      - name: deploy-to-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{secrets.prhwc}}
+          publish_dir: ./dist
+  Slack-Alert: 
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v4
+      - name: install-Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: "install dependencies"
+        run: python -m pip install requests
+      # - name: set-variable
+      #   run: export STATUS=${{ github.event.workflow_run.conclusion == 'failure' }}
+      - name: tester
+        run: echo $TEST_SLACK_HOOK
+      - name: slack-notification
+        run: python notification.py ${{ github.event.workflow_run.conclusion != 'failure' }} ${{secrets.TEST_SLACK_HOOK}}
+
+
