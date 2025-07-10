@@ -1,7 +1,7 @@
 name: Deploy App
 on:
   workflow_run: 
-    workflows: [Test_App]
+    workflows: [Test App]
     types: 
       - completed
 jobs: 

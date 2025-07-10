@@ -20,7 +20,7 @@ Bonus Points:
 - The Playwright test could be more flexible, checking for the existance of the desired string instead of requiring an exact match. 
 - Test_App would make a great reusuable workflow. 
 
-### Sources Used: 
+### Sources Used
 
 <details>
 <summary>Expand for a (mostly) comprehensive list of resources used.</summary>
