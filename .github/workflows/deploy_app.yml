@@ -51,6 +51,6 @@ jobs:
       - name: "install dependencies"
         run: python -m pip install requests
       - name: slack-notification
-        run: python notification.py ${{ github.event.workflow_run.conclusion != 'failure' }} ${{secrets.TEST_SLACK_HOOK}}
+        run: python notification.py ${{ github.event.workflow_run.conclusion != 'failure' }} ${{secrets.SLACK_HOOK}}
 
 
